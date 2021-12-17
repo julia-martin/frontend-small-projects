@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Bold Element + Custom</title>
+    <script>
+      function makeBold(elem, func) {
+        elem.style.fontWeight = 'bold';
+        let boldEvent = new CustomEvent('bolded')
+        elem.dispatchEvent('bolded');
+      }
+    </script>
+  </head>
+  <body>
+    <section>Hello World</section>
+    <p>Greetings!</p>
+  </body>
+</html>

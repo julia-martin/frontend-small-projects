@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Calculator</title>
+    <style>
+      body {
+        background-color: darksalmon;
+        font-family: Helvetica, Arial, sans-serif;
+      }
+
+      main {
+        background-color: white;
+        border-radius: 5px;
+        margin: 50px auto;
+        height: 450px;
+        width: 400px;
+      }
+
+      #operation-window, #entry-window {
+        text-align: right;
+        margin: 0 10px;
+      }
+
+      #operation-window {
+        box-sizing: border-box;
+        height: 50px;
+        padding-top: 10px;
+      }
+
+      #entry-window {
+        border-bottom: 1px solid gray;
+        box-sizing: border-box;
+        font-size: 2rem;
+        height: 60px;
+      }
+
+      p {
+        margin: 0;
+        padding: 10px;
+      }
+
+      #buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+        gap: 5px 5px;
+        justify-items: stretch;
+        margin: 10px 10px;
+        height: 320px;
+      }
+
+      button {
+        background-color: lightgray;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.3rem;
+      }
+
+      button:hover {
+        cursor: pointer;
+      }
+    </style>
+    <script>
+      function appendDigit(e) {
+        let entryWindow = document.getElementById('entry-window');
+        if (entryWindow.textContent === '0') {
+          entryWindow.textContent = e.target.textContent;
+        } else {
+          entryWindow.textContent += e.target.textContent;
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const digits = document.querySelectorAll('.digit');
+        const operators = document.querySelectorAll('.operator');
+        const neg = document.getElementById('neg');
+        const clearEntry = document.getElementById('clear-entry');
+        const clearAll = document.getElementById('clear-all');
+        const calculate = document.getElementById('calculate');
+        const operWindow = document.getElementById('operation-window');
+        const entryWindow = document.getElementById('entry-window');
+
+        digits.forEach(digit => digit.addEventListener('click', appendDigit));
+
+        operators.forEach(operator => operator.addEventListener('click', e => {
+          operWindow.textContent += entryWindow.textContent.trim() + ' ' + e.target.textContent + ' ';
+          document.getElementById('entry-window').textContent = 0;
+        }));
+
+        neg.addEventListener('click', e => {
+          if (entryWindow.textContent !== 0) {
+            entryWindow.textContent = -entryWindow.textContent;
+          }
+        });
+
+        calculate.addEventListener('click', e => {
+          let expression = (operWindow.textContent + entryWindow.textContent).replace('x', '*').replace(/\s+/g, '');
+          let result = eval(expression);
+          operWindow.textContent = '';
+          entryWindow.textContent = result;
+        });
+
+        clearAll.addEventListener('click', e => {
+          operWindow.textContent = '';
+          entryWindow.textContent = 0;
+        });
+
+        clearEntry.addEventListener('click', e => {
+          entryWindow.textContent = 0;
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <main>
+      <div id='operation-window'></div>
+      <div id='entry-window'>0</div>
+      <div id='buttons'>
+        <button type="button" id="clear-entry">CE</button>
+        <button type="button" id="clear-all">C</button>
+        <button type="button" id="neg">NEG</button>
+        <button type="button" class="operator">/</button>
+        <button type="button" class="digit">7</button>
+        <button type="button" class="digit">8</button>
+        <button type="button" class="digit">9</button>
+        <button type="button" class="operator">x</button>
+        <button type="button" class="digit">4</button>
+        <button type="button" class="digit">5</button>
+        <button type="button" class="digit">6</button>
+        <button type="button" class="operator">-</button>
+        <button type="button" class="digit">1</button>
+        <button type="button" class="digit">2</button>
+        <button type="button" class="digit">3</button>
+        <button type="button" class="operator">+</button>
+        <button type="button" class="digit">0</button>
+        <button type="button" class="digit">.</button>
+        <button type="button" class="operator">%</button>
+        <button type="button" id="calculate">=</button>
+      </div>
+    </main>
+  </body>
+</html>

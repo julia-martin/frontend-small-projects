@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>Programming Languages</title>
+    <style>
+      body, button {
+        background-color: olive;
+        color: white;
+        text-align: center;
+      }
+
+      main {
+        background-color: white;
+        border-radius: 5px;
+        color: black;
+        width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: left;
+      }
+
+      button {
+        border: none;
+        border-radius: 5px;
+        height: 25px;
+        width: 100px;
+      }
+    </style>
+    <script>
+      const languages = [
+        {
+          name: 'Ruby',
+          description: 'Ruby is a dynamic, reflective, object-oriented, ' +
+          'general-purpose programming language. It was designed and developed in the mid-1990s ' +
+          'by Yukihiro Matsumoto in Japan. According to its creator, Ruby was influenced by Perl, ' +
+          'Smalltalk, Eiffel, Ada, and Lisp. It supports multiple programming paradigms, ' +
+          'including functional, object-oriented, and imperative. It also has a dynamic type ' +
+          'system and automatic memory management.'
+        },
+        {
+          name: 'JavaScript',
+          description: 'JavaScript is a high-level, dynamic, untyped, and interpreted ' +
+          'programming language. It has been standardized in the ECMAScript language ' +
+          'specification. Alongside HTML and CSS, JavaScript is one of the three core ' +
+          'technologies of World Wide Web content production; the majority of websites employ ' +
+          'it, and all modern Web browsers support it without the need for plug-ins. JavaScript ' +
+          'is prototype-based with first-class functions, making it a multi-paradigm language, ' +
+          'supporting object-oriented, imperative, and functional programming styles.'
+        },
+        {
+          name: 'Python',
+          description: "Python is an interpreted high-level general-purpose programming language. Python's design philosophy emphasizes code readability with its notable use of significant indentation. Its language constructs as well as its object-oriented approach aim to help programmers write clear, logical code for small and large-scale projects. Python is dynamically-typed and garbage-collected. It supports multiple programming paradigms, including structured (particularly, procedural), object-oriented and functional programming."
+        }
+      ];
+
+      function truncateText(elem, idx) {
+        elem.textContent = languages[idx].description.slice(0, 120) + ' ...';
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        let sections = document.querySelectorAll('section');
+        sections.forEach((section, idx) => {
+          let description = document.createElement('p');
+          truncateText(description, idx);
+          section.insertBefore(description, section.lastElementChild);
+        })
+
+        let buttons = document.querySelectorAll('button');
+        buttons.forEach((button, idx) => {
+          button.addEventListener('click', e => {
+            if (e.target.textContent === 'Show More') {
+              e.target.previousElementSibling.textContent = languages[idx].description;
+              e.target.textContent = 'Show Less';
+            } else {
+              truncateText(e.target.previousElementSibling, idx);
+              e.target.textContent = 'Show More';
+            }
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>Programming Languages</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Ruby</h2>
+        <button type='button'>Show More</button>
+      </section>
+      <section>
+        <h2>JavaScript</h2>
+        <button type='button'>Show More</button>
+      </section>
+      <section>
+        <h2>Python</h2>
+        <button type='button'>Show More</button>
+      </section>
+    </main>
+  </body>
+</html>

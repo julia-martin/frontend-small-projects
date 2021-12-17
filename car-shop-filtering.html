@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Car Shop</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+
+      header {
+        background-color: goldenrod;
+        color: white;
+        padding: 20px;
+      }
+
+      form {
+        margin-top: 10px;
+      }
+
+      fieldset {
+        border: none;
+      }
+
+      select, button {
+        background-color: goldenrod;
+        border: 1px solid white;
+        border-radius: 5px;
+        color: white;
+        margin-right: 10px;
+        padding: 5px;
+        width: 80px;
+      }
+
+      #submit {
+        margin-left: 20px;
+        width: 60px;
+      }
+
+      .car {
+        display: inline-block;
+        margin: 10px;
+      }
+
+      .car img {
+        width: 200px;
+        height: auto;
+      }
+
+      .car p {
+        margin-bottom: 5px;
+      }
+
+      .buy {
+        width: 50px;
+      }
+      .buy:hover {
+        cursor: pointer;
+      }
+    </style>
+    <script>
+      const cars = [
+        { make: 'Honda', image: 'car_filtering_images/honda-accord-2005.jpg', model: 'Accord', year: 2005, price: 7000 },
+        { make: 'Honda', image: 'car_filtering_images/honda-accord-2008.jpg', model: 'Accord', year: 2008, price: 11000 },
+        { make: 'Toyota', image: 'car_filtering_images/toyota-camry-2009.jpg', model: 'Camry', year: 2009, price: 12500 },
+        { make: 'Toyota', image: 'car_filtering_images/toyota-corrolla-2016.jpg', model: 'Corolla', year: 2016, price: 15000 },
+        { make: 'Suzuki', image: 'car_filtering_images/suzuki-swift-2014.jpg', model: 'Swift', year: 2014, price: 9000 },
+        { make: 'Audi', image: 'car_filtering_images/audi-a4-2013.jpg', model: 'A4', year: 2013, price: 25000 },
+        { make: 'Audi', image: 'car_filtering_images/audi-a4-2013.jpg', model: 'A4', year: 2013, price: 26000 },
+      ];
+
+      function getModels(make) {
+        return cars.filter(car => car.make === make)
+          .filter(getUnique('model'))
+          .map(car => car.model);
+      }
+
+      function getUnique(key) {
+        return (obj, idx, arr) => {
+          let firstIdx = arr.findIndex(elem => elem[key] === obj[key]);
+          return firstIdx === idx;
+        };
+      }
+
+      function createOptions(vals, name) {
+        let select = document.getElementById(name);
+        vals.forEach(val => {
+          let option = document.createElement('option');
+          option.name = name;
+          option.value = val;
+          option.textContent = val;
+          select.appendChild(option);
+        });
+      }
+
+      function removeOptions(name) {
+        let options = document.querySelectorAll(`#${name} option`);
+        options.forEach(option => {
+          if (!['all', 'any'].includes(option.value)) {
+            option.remove();
+          }
+        });
+      }
+
+      function addFilters(cars) {
+        let keys = ['make', 'model', 'year', 'price'];
+        keys.forEach(key => {
+          let vals = cars.filter(getUnique(key)).map(obj => obj[key]);
+          createOptions(vals, key);
+        });
+      }
+
+      function clearCars() {
+        document.querySelectorAll('.car').forEach(div => div.remove());
+      }
+
+      function renderCar(carObj) {
+        let main = document.querySelector('main');
+        let div = document.createElement('div');
+        div.setAttribute('class', 'car');
+
+        let img = document.createElement('img');
+        img.src = carObj.image;
+        div.appendChild(img);
+
+        let makeModel = document.createElement('p');
+        makeModel.innerHTML = `<strong>${carObj.make} ${carObj.model}</strong>`;
+        div.appendChild(makeModel);
+
+        let year = document.createElement('p');
+        year.textContent = `Year: ${carObj.year}`;
+        div.appendChild(year);
+
+        let price = document.createElement('p');
+        price.textContent = `Price: $${carObj.price}`;
+        div.appendChild(price);
+
+        let buy = document.createElement('button');
+        buy.setAttribute('class', 'buy');
+        buy.textContent = 'Buy';
+        div.appendChild(buy);
+
+        main.appendChild(div);
+      }
+
+      function restrictModel(e) {
+        removeOptions('model');
+        createOptions(getModels(e.target.value), 'model');
+      }
+
+      function handleFilterSubmit(e) {
+        e.preventDefault();
+        clearCars();
+        let selectedMake = document.getElementById('make').value;
+        let selectedModel = document.getElementById('model').value;
+        let selectedPrice = document.getElementById('price').value;
+        let selectedYear = document.getElementById('year').value;
+        cars.filter(car => {
+          return (car.make === selectedMake || selectedMake === 'all') &&
+          (car.model === selectedModel || selectedModel === 'all') &&
+          (car.price === Number(selectedPrice) || selectedPrice === 'any') &&
+          (car.year === Number(selectedYear) || selectedYear === 'any');
+        })
+        .forEach(car => renderCar(car));
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        addFilters(cars);
+        cars.forEach(car => renderCar(car));
+
+        let makeSelect = document.getElementById('make');
+        makeSelect.addEventListener('change', restrictModel);
+
+        let filterBtn = document.getElementById('submit');
+        filterBtn.addEventListener('click', handleFilterSubmit);
+      });
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>Buy Used Cars</h1>
+      <form id='filters'>
+        <fieldset>
+          <label for="make">Make</label>
+          <select name="make" id="make">
+            <option value="all">All</option>
+          </select>
+          <label for="model">Model</label>
+          <select name="model" id="model">
+            <option value="all">All</option>
+          </select>
+          <label for="price">Price</label>
+          <select name="price" id="price">
+            <option value="any">Any</option>
+          </select>
+          <label for="year">Year</label>
+          <select name="year" id="year">
+            <option value="any">Any</option>
+          </select>
+          <button type='submit' id='submit'>Filter</button>
+        </fieldset>
+      </form>
+    </header>
+    <main>
+
+    </main>
+  </body>
+</html>

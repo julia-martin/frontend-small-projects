@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>Exotic Birds</title>
+    <style>
+      body {
+        background-color: darkslateblue;
+      }
+
+      h1 {
+        color: white;
+        text-align: center;
+      }
+
+      figure {
+        display: inline-block;
+      }
+
+      img {
+        border: 5px solid white;
+        width: 250px;
+        height: auto;
+        margin: 20px;
+        vertical-align: middle;
+      }
+
+      figcaption {
+        background-color: black;
+        color: white;
+        opacity: 60%;
+        padding: 5px;
+        position: absolute;
+        visibility: hidden;
+        width: 250px;
+        height: auto;
+        z-index: 1;
+      }
+    </style>
+    <script>
+      function showCaption(element) {
+        element.style.visibility = 'visible';
+      }
+      function hideCaption(element) {
+        element.style.visibility = 'hidden';
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        let imgs = document.querySelectorAll('img');
+        let timer;
+        imgs.forEach(img => {
+          img.addEventListener('mouseover', e => {
+            timer = setTimeout(() => showCaption(e.target.nextElementSibling), 2000);
+          });
+          img.addEventListener('mouseout', e => {
+            clearTimeout(timer);
+            hideCaption(e.target.nextElementSibling);
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Exotic Birds</h1>
+    <figure class='tooltip'>
+      <img src='https://www.thesprucepets.com/thmb/daVSOXZ1WJVaKBJi1Gj6S-0GWqw=/3585x3585/smart/filters:no_upscale()/military-macaw-landing-825528232-5b5e1e3546e0fb00508f1755.jpg' alt='macaw'>
+      <figcaption>Macaws are a group of New World parrots that are long-tailed and often colorful. They are popular in aviculture or as companion parrots.</figcaption>
+    </figure>
+    <figure class='tooltip'>
+      <img src='https://www.thesprucepets.com/thmb/Pd5Wmxubu4OA5ULa0Z3qntpXSBw=/2121x1414/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-178859833-5c6d836dc9e77c0001b506a4.jpg' alt='indian-ringneck'>
+      <figcaption>The Indian ringneck parakeet is an Asiatic subspecies of the rose-ringed parakeet (Psittacula krameri). It is an Asiatic parrot originally from Ceylon. Now, you can find it in many parts of Asia, notably India and Pakistan. It also lives in the western and southern areas of Sudan and the Middle East.</figcaption>
+    </figure>
+    <figure class='tooltip'>
+      <img src='https://lh3.googleusercontent.com/proxy/wSLTpoZDjXHIPHQ51EUdPz0S32BRE2sunx_q1vNfeQi7iGTk5HSe8uHMnam_lewms6MnnYecy-cyqgO9LOrvmaTS_JOjpfVLqmuVC0V8C4wQw6lXqJnGdLRqnQAesMsiLWmR' alt='black-palm-cockatoo'>
+      <figcaption>The palm cockatoo, also known as the goliath cockatoo or great black cockatoo, is a large smoky-grey or black parrot of the cockatoo family native to New Guinea, Aru Islands, and Cape York Peninsula. It has a very large black beak and prominent red cheek patches.</figcaption>
+    </figure>
+    <figure class='tooltip'>
+      <img src='https://cdn.britannica.com/39/166439-050-8D051A6E/parrot-perching.jpg' alt='african-grey'>
+      <figcaption>The grey parrot, also known as the Congo grey parrot, Congo African grey parrot or African grey parrot, is an Old World parrot in the family Psittacidae. The Timneh parrot once was identified as a subspecies of the grey parrot, but has since been elevated to a full species.</figcaption>
+    </figure>
+    <figure class='tooltip'>
+      <img src='https://zupreem.com/wp-content/uploads/2020/11/shutterstock_4620094-scaled.jpg' alt='moluccan-cockatoo'>
+      <figcaption>The salmon-crested cockatoo, also known as the Moluccan cockatoo, is a cockatoo endemic to the Seram archipelago in eastern Indonesia. At a height of up to 46–52 centimetres and weight of up to 850 grams, it is among the largest of the white cockatoos. The female is larger than the male on average.</figcaption>
+    </figure>
+    <figure class='tooltip'>
+      <img src='https://i.pinimg.com/originals/af/59/71/af5971220836f379bd64ea36d7017035.jpg' alt='amazon-parrot'>
+      <figcaption>Amazon parrots are parrots in the genus Amazona. They are medium-sized, short-tailed parrots native to the Americas, with their range extending from South America to Mexico and the Caribbean</figcaption>
+    </figure>
+    <figure class='tooltip'>
+      <img src='https://upload.wikimedia.org/wikipedia/commons/1/15/Birds_Sun_Conure.jpg' alt='sun-conure'>
+      <figcaption>The sun conure is a medium-sized, vibrantly colored parrot native to northeastern South America. The adult male and female are similar in appearance, with predominantly golden-yellow plumage and orange-flushed underparts and face.</figcaption>
+    </figure>
+    <figure class='tooltip'>
+      <img src='https://i.pinimg.com/originals/9c/ba/8d/9cba8d1c7719bcd235f423ea7dcca553.jpg' alt='keel-billed-toucan'>
+      <figcaption>The keel-billed toucan, also known as sulfur-breasted toucan or rainbow-billed toucan, is a colorful Latin American member of the toucan family. It is the national bird of Belize. The species is found in tropical jungles from southern Mexico to Colombia.</figcaption>
+    </figure>
+  </body>
+</html>

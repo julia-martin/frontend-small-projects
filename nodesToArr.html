@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Nodes to Array</title>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        function walk(node, arr) {
+          let currArr = arr;
+          if (node !== document.body) {
+            currArr.push([ node.tagName, [] ]);
+            if (node.children.length > 0)  {
+              currArr = currArr[currArr.length - 1][1];
+            }
+          }
+          for (let index = 0; index < node.children.length; index += 1) {
+            walk(node.children[index], currArr);
+          }
+        }
+
+        function nodesToArr() {
+          let result = ["BODY", []];
+          walk(document.body, result[1]);
+          return result;
+        }
+        console.log(nodesToArr());
+      });
+    </script>
+  </head>
+  <body>
+    <div id="1">
+      <div id="4"></div>
+      <div id="5">
+        <div id="6"></div>
+      </div>
+    </div>
+    <div id="2"></div>
+    <div id="3">
+      <div id="7"></div>
+      <div id="8"></div>
+      <div id="9"></div>
+    </div>
+  </body>
+</html>

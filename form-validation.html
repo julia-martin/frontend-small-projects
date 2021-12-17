@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Form Validation</title>
+    <style>
+      body {
+        background-color: mediumseagreen;
+      }
+
+      h1 {
+        color: white;
+      }
+
+      main {
+        background-color: white;
+        border-radius: 10px;
+        margin: 30px;
+        overflow: auto;
+      }
+
+      div {
+        margin: 20px;
+      }
+
+      label {
+        display: block;
+      }
+
+      input {
+        display: inline-block;
+      }
+
+      input[name='credit_card'] {
+        width: 40px;
+      }
+
+      button {
+        margin: 10px 20px;
+        background-color: mediumseagreen;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-weight: bold;
+        height: 50px;
+        width: 100px;
+      }
+
+      #message {
+        color: red;
+        margin-left: 20px;
+        visibility: hidden;
+      }
+
+      p {
+        display: inline-block;
+        margin: 0 5px;
+      }
+
+      p.error {
+        margin-left: 50px;
+        color: red;
+      }
+
+      #serialized-form {
+        background-color: dodgerblue;
+        color: white;
+        overflow: auto;
+      }
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        let form = document.querySelector('form');
+        let message = document.getElementById('message');
+
+        function validateInput(name, value) {
+          switch (name) {
+            case 'first_name':
+              if (value.trim().length === 0) {
+                return 'First Name is a required field';
+              }
+              break;
+            case 'last_name':
+              if (value.trim().length === 0) {
+                return 'Last Name is a required field';
+              }
+              break;
+            case 'email':
+              if (value.trim().length === 0) {
+                return 'Email is a required field';
+              } else if (!value.match(/.+@.+/)) {
+                return 'Please enter a valid email';
+              }
+              break;
+            case 'password':
+              if (value.trim().length === 0) {
+                return 'Password is a required field';
+              } else if (value.length < 10) {
+                return 'Password must be at least 10 characters long';
+              }
+              break;
+            case 'phone':
+              if (!value.match(/^\d{10}$/)) {
+                return 'Please enter a valid phone number';
+              }
+              break;
+            case 'credit_card':
+              if (!value.match(/^\d{4}$/)) {
+                return 'Must be 4 digits each';
+              }
+          }
+        }
+
+        function preventNums(e) {
+          if (!(/[a-z]/i).test(e.key) && e.key !== 'Backspace') {
+            e.preventDefault();
+          }
+        }
+        function preventAlpha(e) {
+          if (!(/\d/).test(e.key) && e.key !== 'Backspace') {
+            e.preventDefault();
+          }
+        }
+
+        function changeFocus(e) {
+          if (e.target.value.length === 4) {
+            e.target.nextElementSibling.nextElementSibling.focus();
+          }
+        }
+
+        function shiftTab(e) {
+          if (e.shiftKey && e.key === "Tab") {
+            e.target.parentElement.previousElementSibling.querySelector('input').focus();
+          }
+        }
+
+        document.querySelectorAll('input')
+          .forEach(input => {
+            input.addEventListener('blur', e => {
+              let error = validateInput(e.target.name, e.target.value);
+              if (error) {
+                message.style.visibility = 'visible';
+                e.target.style.borderColor = 'red';
+                e.target.parentElement.lastElementChild.textContent = error;
+              } else {
+                message.style.visibility = 'hidden';
+              }
+            });
+            input.addEventListener('focus', e => {
+              e.target.style.borderColor = 'green';
+              e.target.parentElement.lastElementChild.textContent = '';
+            });
+         //   input.addEventListener('keyup', shiftTab);
+          });
+
+        document.getElementById('first-name').addEventListener('keypress', preventNums);
+        document.getElementById('last-name').addEventListener('keypress', preventNums);
+
+        document.getElementById('phone').addEventListener('keypress', preventAlpha);
+
+        document.querySelectorAll('.credit-card input').forEach((input, idx) => {
+          input.addEventListener('keypress', preventAlpha);
+          if (idx < 3) {
+            input.addEventListener('keyup', changeFocus);
+          }
+        });
+
+        form.addEventListener('submit', e => {
+          e.preventDefault();
+          const CREDIT_CARD_IDX = 5;
+          let inputs = Array.from(e.target.querySelectorAll('input'));
+
+          if (!inputs.some(input => validateInput(input.name, input.value))) {
+            let request = new XMLHttpRequest();
+            request.open('POST', '/');
+            let formData = [];
+            for (let idx = 0; idx < CREDIT_CARD_IDX; idx++) {
+              let elem = form.elements[idx];
+              let key = encodeURIComponent(elem.name);
+              let value = encodeURIComponent(elem.value);
+              formData.push(`${key}=${value}`);
+            }
+            let key = 'credit_card';
+            let value = '';
+            for (let idx = CREDIT_CARD_IDX; idx < CREDIT_CARD_IDX + 4; idx++) {
+              value += form.elements[idx].value;
+            }
+            formData.push(`${key}=${value}`);
+            let data = formData.join('&');
+
+            let formText = document.createElement('p');
+            formText.textContent = data;
+            document.getElementById('serialized-form').appendChild(formText);
+
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            request.send(data);
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Sign Up Form</h1>
+    <main>
+      <p id='message'>Form cannot be submitted until errors are corrected.</p>
+      <form id='signup' novalidate>
+        <div class='first-name'>
+          <label for='first-name'>First Name:</label>
+          <input type='text' name='first_name' id='first-name' required>
+          <p class='error'></p>
+        </div>
+        <div class='last-name'>
+          <label for='last-name'>Last Name:</label>
+          <input type='text' name='last_name' id='last-name' required>
+          <p class='error'></p>
+        </div>
+        <div class='email'>
+          <label for='email'>Email:</label>
+          <input type='email' name='email' id='email' required pattern=".+@.+">
+          <p class='error'></p>
+        </div>
+        <div class='password'>
+          <label for='password'>Password:</label>
+          <input type='password' name='password' id='password' required minlength="10">
+          <p class='error'></p>
+        </div>
+        <div class='phone'>
+          <label for='phone'>Phone:</label>
+          <input type='tel' name='phone' id='phone' placeholder='xxxxxxxxxx' pattern="\d{10}">
+          <p class='error'></p>
+        </div>
+        <div class='credit-card'>
+          <label for='credit-card'>Credit Card:</label>
+          <input type='text' name='credit_card' maxlength="4" pattern="\d+"><p>-</p>
+          <input type='text' name='credit_card' maxlength="4" pattern="\d+"><p>-</p>
+          <input type='text' name='credit_card' maxlength="4" pattern="\d+"><p>-</p>
+          <input type='text' name='credit_card' maxlength="4" pattern="\d+">
+          <p class='error'></p>
+        </div>
+        <button form='signup' type="submit" id="submit">Sign up</button>
+      </form>
+      <div id=serialized-form>
+        <h2>Serialized Form</h2>
+      </div>
+    </main>
+  </body>
+</html>

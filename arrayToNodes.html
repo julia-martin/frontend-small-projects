@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Array to Nodes</title>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        function arrayToNodes(nodes) {
+          let html;
+
+          function createNode(currArr, parent) {
+            let tagName = currArr[0];
+            let elem = document.createElement(tagName);
+            if (parent) {
+              parent.appendChild(elem);
+            } else {
+              html = elem;
+            }
+            let children = currArr[1];
+            if (children.length === 0) return;
+            for (let idx = 0; idx < children.length; idx++) {
+              createNode(children[idx], elem);
+            }
+            return
+          }
+          createNode(nodes);
+          return html;
+        }
+      });
+    </script>
+  </head>
+</html>

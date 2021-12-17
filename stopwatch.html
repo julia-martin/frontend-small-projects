@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Stopwatch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        background-color: darksalmon;
+        color: white;
+        font-size: 72px;
+        font-family: 'Nanum Gothic', Helvetica, Arial, sans-serif;
+      }
+
+      main {
+        margin: 150px auto;
+        width: 600px;
+        text-align: center;
+      }
+
+      .labels {
+        position: relative;
+        right: 25px;
+      }
+
+      p {
+        color: white;
+        display: inline;
+        font-size: 1.5rem;
+        margin: 0 120px 0 0;
+      }
+
+      h1 {
+        display: inline;
+        font-size: 5rem;
+      }
+
+      button {
+        background-color: darksalmon;
+        border: 1px solid white;
+        border-radius: 5px;
+        color: white;
+        font-family: 'Nanum Gothic', Helvetica, Arial, sans-serif;
+        margin: 10px;
+        padding: 10px 5px;
+        width: 80px;
+      }
+      button:hover {
+        cursor: pointer;
+      }
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        let counters = [0, 0, 0, 0];
+        const HOURS_IDX = 0;
+        const MINUTES_IDX = 1;
+        const SECONDS_IDX = 2;
+        const CENTI_IDX = 3;
+        let hourTimer;
+        let minuteTimer;
+        let secondsTimer;
+        let centisecTimer;
+        let startStopBtn = document.getElementById('start-stop');
+
+        function incrementCounter(counterIdx, id) {
+          counters[counterIdx]++;
+          if ((counterIdx === HOURS_IDX || counterIdx === CENTI_IDX) && counters[counterIdx] === 100) {
+            counters[counterIdx] = 0;
+          } else if ((counterIdx === MINUTES_IDX || counterIdx === SECONDS_IDX) && counters[counterIdx] === 60) {
+            counters[counterIdx] = 0;
+          }
+          document.getElementById(id).textContent = String(counters[counterIdx]).padStart(2, '0');
+        }
+
+        function stop() {
+          [hourTimer, minuteTimer, secondsTimer, centisecTimer].forEach(timer => clearInterval(timer));
+          startStopBtn.textContent = 'Start';
+        }
+
+        startStopBtn.addEventListener('click', e => {
+          if (e.target.textContent === 'Start') {
+            hourTimer = setInterval(incrementCounter, 1000 * 60 * 60, HOURS_IDX, 'hours');
+            minuteTimer = setInterval(incrementCounter, 1000 * 60, MINUTES_IDX, 'minutes');
+            secondsTimer = setInterval(incrementCounter, 1000, SECONDS_IDX, 'seconds');
+            centisecTimer = setInterval(incrementCounter, 10, CENTI_IDX, 'centiseconds');
+            startStopBtn.textContent = 'Stop';
+          } else {
+            stop();
+          }
+        });
+
+        document.getElementById('reset').addEventListener('click', () => {
+          stop();
+          counters = [0, 0, 0, 0];
+          document.querySelectorAll('.counter').forEach(elem => elem.textContent = '00');
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <main>
+      <div class='labels'>
+        <p>H</p>
+        <p>M</p>
+        <p>S</p>
+      </div>
+      <div class='stopwatch'>
+        <h1 class='counter' id='hours'>00</h1>
+        :
+        <h1 class='counter' id='minutes'>00</h1>
+        :
+        <h1 class='counter' id='seconds'>00</h1>
+        :
+        <h1 class='counter' id='centiseconds'>00</h1>
+      </div>
+      <button type='button' id='start-stop'>Start</button>
+      <button type='button' id='reset'>Reset</button>
+    </main>
+  </body>
+</html>
